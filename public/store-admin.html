@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manage Store — BuddySite</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div style="background:#3D2C3E;color:#FFD166;text-align:center;padding:8px;font-size:.8rem;font-weight:700;letter-spacing:.03em;">⚠️ DEMO BUILD — plan activation skips real payment. Never deploy this version publicly.</div>
+<div class="topbar container">
+  <div class="row">
+    <a href="/dashboard.html" class="btn secondary">← Back</a>
+    <strong id="storeNameLabel" style="font-family:Poppins,sans-serif;"></strong>
+  </div>
+  <a class="btn" id="viewStoreBtn" target="_blank">View my store</a>
+</div>
+
+<div class="admin-wrap">
+  <div class="admin-side">
+    <a href="#" data-tab="settings" class="active">🏪 Store Settings</a>
+    <a href="#" data-tab="about">📄 About Us Page</a>
+    <a href="#" data-tab="contact">☎️ Contact Us Page</a>
+    <a href="#" data-tab="add">➕ Add Product</a>
+    <a href="#" data-tab="manage">📦 Manage Products</a>
+    <a href="#" data-tab="categories" id="categoriesLink">🏷 Categories</a>
+    <a href="#" data-tab="payment">💳 Payment Method</a>
+    <a href="#" data-tab="orders">🧾 Orders</a>
+  </div>
+
+  <div class="admin-main">
+
+    <div class="tab-panel" data-panel="settings">
+      <h2>Store Settings</h2>
+      <label>Store name</label>
+      <input id="storeName"/>
+      <label>Store description</label>
+      <textarea id="storeDesc" rows="3" placeholder="Tell customers what your store is about"></textarea>
+      <label>Background (image or video)</label>
+      <div class="file-input-wrap">
+        <input type="file" id="bgFile" accept="image/*,video/*"/>
+        <p class="muted" style="font-size:.8rem;margin-top:8px;">Upload a photo or short video for your store's homepage banner.</p>
+        <div id="bgPreviewWrap"></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:20px;"><input type="checkbox" id="publishToggle" style="width:auto;"/> Published (visible to customers)</label>
+      <button class="btn" id="saveSettingsBtn" style="margin-top:20px;">Save Settings</button>
+      <span class="muted" id="settingsStatus" style="margin-left:10px;"></span>
+    </div>
+
+    <div class="tab-panel" data-panel="about" style="display:none;">
+      <h2>About Us Page</h2>
+      <p class="muted">Available on every plan. Tell customers who you are.</p>
+      <label>Page background</label>
+      <div class="file-input-wrap">
+        <input type="file" id="aboutBgFile" accept="image/*"/>
+        <input type="file" id="aboutBgVideoFile" accept="video/*" style="margin-top:8px;display:none;"/>
+        <p class="muted" id="aboutVideoNote" style="font-size:.8rem;margin-top:8px;"></p>
+        <div id="aboutBgPreviewWrap"></div>
+      </div>
+      <div style="margin-top:20px;">
+        <label>Add a paragraph</label>
+        <textarea id="aboutParagraphInput" rows="3" placeholder="Write something about your story..."></textarea>
+        <button class="icon-btn" id="aboutAddParagraphBtn" style="margin-top:8px;">+ Add Paragraph</button>
+      </div>
+      <div style="margin-top:20px;">
+        <label>Add a photo</label>
+        <input type="file" id="aboutImageFile" accept="image/*"/>
+      </div>
+      <div id="aboutBlockList" style="margin-top:20px;"></div>
+      <button class="btn" id="aboutSaveBtn" style="margin-top:20px;">Save About Us Page</button>
+      <span class="muted" id="aboutStatus" style="margin-left:10px;"></span>
+    </div>
+
+    <div class="tab-panel" data-panel="contact" style="display:none;">
+      <h2>Contact Us Page</h2>
+      <p class="muted">Available on every plan. Share how customers can reach you.</p>
+      <label>Page background</label>
+      <div class="file-input-wrap">
+        <input type="file" id="contactBgFile" accept="image/*"/>
+        <input type="file" id="contactBgVideoFile" accept="video/*" style="margin-top:8px;display:none;"/>
+        <p class="muted" id="contactVideoNote" style="font-size:.8rem;margin-top:8px;"></p>
+        <div id="contactBgPreviewWrap"></div>
+      </div>
+      <div style="margin-top:20px;">
+        <label>Add a paragraph</label>
+        <textarea id="contactParagraphInput" rows="3" placeholder="Phone, email, address, hours..."></textarea>
+        <button class="icon-btn" id="contactAddParagraphBtn" style="margin-top:8px;">+ Add Paragraph</button>
+      </div>
+      <div style="margin-top:20px;">
+        <label>Add a photo</label>
+        <input type="file" id="contactImageFile" accept="image/*"/>
+      </div>
+      <div id="contactBlockList" style="margin-top:20px;"></div>
+      <button class="btn" id="contactSaveBtn" style="margin-top:20px;">Save Contact Us Page</button>
+      <span class="muted" id="contactStatus" style="margin-left:10px;"></span>
+    </div>
+
+    <div class="tab-panel" data-panel="add" style="display:none;">
+      <h2>Add a Product</h2>
+      <label>Product image</label>
+      <div class="file-input-wrap">
+        <input type="file" id="prodFile" accept="image/*"/>
+        <div id="prodPreviewWrap"></div>
+      </div>
+      <label>Product name</label><input id="prodName"/>
+      <label>Price (₹)</label><input id="prodPrice" type="number"/>
+      <div class="fee-note" id="feeNote"></div>
+      <label>Size (optional)</label><input id="prodSize" placeholder="e.g. M, L, XL / 500g / etc."/>
+      <label>Color (optional)</label><input id="prodColor"/>
+      <label>Description (optional)</label><textarea id="prodDesc" rows="2"></textarea>
+      <label id="prodCategoryLabel" style="display:none;">Category</label>
+      <select id="prodCategory" style="display:none;"></select>
+      <button class="btn" id="addProductBtn" style="margin-top:16px;">Add Product</button>
+      <span class="muted" id="addProductStatus" style="margin-left:10px;"></span>
+    </div>
+
+    <div class="tab-panel" data-panel="manage" style="display:none;">
+      <h2>Manage Products</h2>
+      <div id="productList"></div>
+    </div>
+
+    <div class="tab-panel" data-panel="categories" style="display:none;">
+      <h2>Categories</h2>
+      <p class="muted">Group your products, e.g. "Shirts", "Pants", "Hats".</p>
+      <div class="row" style="margin-bottom:16px;">
+        <input id="newCategoryName" placeholder="Category name" style="max-width:240px;"/>
+        <button class="btn" id="addCategoryBtn">+ Add</button>
+      </div>
+      <div id="categoryList"></div>
+    </div>
+
+    <div class="tab-panel" data-panel="payment" style="display:none;">
+      <h2>Payment Method</h2>
+      <p class="muted">Paste a Razorpay Payment Link here — customers are sent here to pay after checkout.</p>
+      <div class="fee-note" style="margin-bottom:16px;">
+        ⚠️ Important: create this in Razorpay under <strong>Payment Links</strong> (not Payment Pages), and
+        set it to accept a <strong>flexible/custom amount</strong> — not a fixed price. Your order totals will
+        vary, so a fixed-amount link won't work correctly.
+      </div>
+      <label>Payment link</label>
+      <input id="paymentLink" placeholder="https://rzp.io/l/your-link"/>
+      <button class="btn" id="savePaymentBtn" style="margin-top:16px;">Save</button>
+      <span class="muted" id="paymentStatus" style="margin-left:10px;"></span>
+      <div class="fee-note" style="margin-top:20px;">
+        💡 BuddySite charges a 15% platform fee on each sale. Full automatic fee collection is being set up with Razorpay —
+        until then, please account for the 15% fee yourself when withdrawing your earnings.
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="orders" style="display:none;">
+      <h2>Orders</h2>
+      <div id="orderList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+API.requireLogin();
+const params = new URLSearchParams(location.search);
+const siteId = params.get('id');
+let site = null;
+let plan = null;
+let uploadedBgUrl = '', uploadedBgType = 'image';
+let uploadedProdImg = '';
+
+document.querySelectorAll('.admin-side a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.admin-side a').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    document.querySelector(`.tab-panel[data-panel="${link.dataset.tab}"]`).style.display = 'block';
+    if (link.dataset.tab === 'manage') renderProductList();
+    if (link.dataset.tab === 'categories') renderCategoryList();
+    if (link.dataset.tab === 'orders') loadOrders();
+  });
+});
+
+async function load() {
+  const { site: s } = await API.call('/api/sites/' + siteId);
+  site = s;
+  const { user } = await API.call('/api/auth/me');
+  const { plans } = await API.call('/api/billing/plans');
+  plan = plans.find(p => p.key === user.plan) || plans[0];
+
+  document.getElementById('storeNameLabel').textContent = site.store_name;
+  document.getElementById('storeName').value = site.store_name;
+  document.getElementById('storeDesc').value = site.description || '';
+  document.getElementById('publishToggle').checked = !!site.published;
+  document.getElementById('paymentLink').value = site.payment_link || '';
+  document.getElementById('viewStoreBtn').href = '/store/' + site.slug;
+  uploadedBgUrl = site.background_url; uploadedBgType = site.background_type;
+  if (uploadedBgUrl) showBgPreview(uploadedBgUrl, uploadedBgType);
+  document.getElementById('feeNote').textContent = 'BuddySite fee: 15% of the price you set will go to BuddySite when this product sells.';
+
+  if (plan.categories) {
+    document.getElementById('categoriesLink').style.display = 'block';
+    document.getElementById('prodCategoryLabel').style.display = 'block';
+    document.getElementById('prodCategory').style.display = 'block';
+    renderCategoryOptions();
+  } else {
+    document.getElementById('categoriesLink').style.display = 'none';
+  }
+
+  setupInfoPage('about', site.aboutPage);
+  setupInfoPage('contact', site.contactPage);
+}
+
+// ---------- About Us / Contact Us pages (shared logic for both) ----------
+const infoPageState = { about: { blocks: [], bgUrl: '', bgType: 'image' }, contact: { blocks: [], bgUrl: '', bgType: 'image' } };
+
+function setupInfoPage(key, pageData) {
+  infoPageState[key].blocks = (pageData && pageData.content) ? JSON.parse(JSON.stringify(pageData.content)) : [];
+  infoPageState[key].bgUrl = (pageData && pageData.background_url) || '';
+  infoPageState[key].bgType = (pageData && pageData.background_type) || 'image';
+
+  // Video backgrounds are Grow/Pro only
+  const videoInput = document.getElementById(key + 'BgVideoFile');
+  const videoNote = document.getElementById(key + 'VideoNote');
+  if (plan.videoBackgrounds) {
+    videoInput.style.display = 'block';
+    videoNote.textContent = 'You can upload an image above, or a short video here instead.';
+  } else {
+    videoInput.style.display = 'none';
+    videoNote.textContent = 'Video backgrounds are available on the Grow plan and above.';
+  }
+
+  if (infoPageState[key].bgUrl) showInfoBgPreview(key);
+  renderInfoBlockList(key);
+}
+
+function showInfoBgPreview(key) {
+  const state = infoPageState[key];
+  const wrap = document.getElementById(key + 'BgPreviewWrap');
+  wrap.innerHTML = state.bgType === 'video'
+    ? `<video src="${state.bgUrl}" class="file-preview" muted autoplay loop></video>`
+    : `<img src="${state.bgUrl}" class="file-preview"/>`;
+}
+
+async function uploadInfoFile(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: 'Bearer ' + API.token() }, body: formData });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+['about', 'contact'].forEach(key => {
+  document.getElementById(key + 'BgFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const data = await uploadInfoFile(file);
+      infoPageState[key].bgUrl = data.url; infoPageState[key].bgType = 'image';
+      showInfoBgPreview(key);
+    } catch (err) { alert(err.message); }
+  });
+
+  document.getElementById(key + 'BgVideoFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!plan.videoBackgrounds) { alert('Video backgrounds are available on the Grow plan and above.'); return; }
+    try {
+      const data = await uploadInfoFile(file);
+      infoPageState[key].bgUrl = data.url; infoPageState[key].bgType = 'video';
+      showInfoBgPreview(key);
+    } catch (err) { alert(err.message); }
+  });
+
+  document.getElementById(key + 'AddParagraphBtn').addEventListener('click', () => {
+    const input = document.getElementById(key + 'ParagraphInput');
+    if (!input.value.trim()) return;
+    infoPageState[key].blocks.push({ type: 'paragraph', text: input.value.trim() });
+    input.value = '';
+    renderInfoBlockList(key);
+  });
+
+  document.getElementById(key + 'ImageFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const data = await uploadInfoFile(file);
+      infoPageState[key].blocks.push({ type: 'image', url: data.url });
+      renderInfoBlockList(key);
+      e.target.value = '';
+    } catch (err) { alert(err.message); }
+  });
+
+  document.getElementById(key + 'SaveBtn').addEventListener('click', async () => {
+    const statusEl = document.getElementById(key + 'Status');
+    statusEl.textContent = 'Saving...';
+    try {
+      await API.call('/api/sites/' + siteId + '/pages/' + key, {
+        method: 'PUT',
+        body: JSON.stringify({
+          content: infoPageState[key].blocks,
+          background_url: infoPageState[key].bgUrl,
+          background_type: infoPageState[key].bgType
+        })
+      });
+      statusEl.textContent = 'Saved ✓';
+      setTimeout(() => statusEl.textContent = '', 2000);
+    } catch (err) { statusEl.textContent = ''; alert(err.message); }
+  });
+});
+
+function renderInfoBlockList(key) {
+  const list = document.getElementById(key + 'BlockList');
+  const blocks = infoPageState[key].blocks;
+  if (blocks.length === 0) { list.innerHTML = '<p class="muted">No content yet — add a paragraph or photo above.</p>'; return; }
+  list.innerHTML = blocks.map((b, i) => `
+    <div class="product-row">
+      <div style="flex:1;">
+        ${b.type === 'paragraph' ? `<span class="muted" style="font-size:.8rem;">Paragraph:</span> ${b.text.slice(0, 80)}${b.text.length > 80 ? '…' : ''}` : `<span class="muted" style="font-size:.8rem;">Photo</span><br/><img src="${b.url}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;margin-top:4px;"/>`}
+      </div>
+      <button class="icon-btn" onclick="removeInfoBlock('${key}', ${i})">Remove</button>
+    </div>
+  `).join('');
+}
+
+function removeInfoBlock(key, index) {
+  infoPageState[key].blocks.splice(index, 1);
+  renderInfoBlockList(key);
+}
+
+function showBgPreview(url, type) {
+  const wrap = document.getElementById('bgPreviewWrap');
+  wrap.innerHTML = type === 'video'
+    ? `<video src="${url}" class="file-preview" muted autoplay loop></video>`
+    : `<img src="${url}" class="file-preview"/>`;
+}
+
+document.getElementById('bgFile').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: 'Bearer ' + API.token() }, body: formData });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    uploadedBgUrl = data.url; uploadedBgType = data.type;
+    showBgPreview(uploadedBgUrl, uploadedBgType);
+  } catch (err) { alert(err.message); }
+});
+
+document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
+  const status = document.getElementById('settingsStatus');
+  status.textContent = 'Saving...';
+  try {
+    await API.call('/api/sites/' + siteId, {
+      method: 'PUT',
+      body: JSON.stringify({
+        store_name: document.getElementById('storeName').value,
+        description: document.getElementById('storeDesc').value,
+        background_url: uploadedBgUrl,
+        background_type: uploadedBgType,
+        published: document.getElementById('publishToggle').checked
+      })
+    });
+    status.textContent = 'Saved ✓';
+    setTimeout(() => status.textContent = '', 2000);
+  } catch (err) { status.textContent = ''; alert(err.message); }
+});
+
+document.getElementById('prodFile').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: 'Bearer ' + API.token() }, body: formData });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    uploadedProdImg = data.url;
+    document.getElementById('prodPreviewWrap').innerHTML = `<img src="${uploadedProdImg}" class="file-preview"/>`;
+  } catch (err) { alert(err.message); }
+});
+
+document.getElementById('addProductBtn').addEventListener('click', async () => {
+  const status = document.getElementById('addProductStatus');
+  const name = document.getElementById('prodName').value;
+  const price = document.getElementById('prodPrice').value;
+  if (!name || !price) { alert('Please enter a product name and price.'); return; }
+  status.textContent = 'Adding...';
+  try {
+    await API.call('/api/sites/' + siteId + '/products', {
+      method: 'POST',
+      body: JSON.stringify({
+        name, price, image: uploadedProdImg,
+        size: document.getElementById('prodSize').value,
+        color: document.getElementById('prodColor').value,
+        description: document.getElementById('prodDesc').value,
+        categoryId: document.getElementById('prodCategory').value || null
+      })
+    });
+    status.textContent = 'Added ✓';
+    document.getElementById('prodName').value = '';
+    document.getElementById('prodPrice').value = '';
+    document.getElementById('prodSize').value = '';
+    document.getElementById('prodColor').value = '';
+    document.getElementById('prodDesc').value = '';
+    document.getElementById('prodPreviewWrap').innerHTML = '';
+    document.getElementById('prodFile').value = '';
+    uploadedProdImg = '';
+    setTimeout(() => status.textContent = '', 2000);
+  } catch (err) { status.textContent = ''; alert(err.message); }
+});
+
+async function renderProductList() {
+  const { site: s } = await API.call('/api/sites/' + siteId);
+  site = s;
+  const list = document.getElementById('productList');
+  if (site.products.length === 0) { list.innerHTML = '<p class="muted">No products yet.</p>'; return; }
+  list.innerHTML = site.products.map(p => `
+    <div class="product-row">
+      ${p.image ? `<img src="${p.image}"/>` : '<div class="noimg"></div>'}
+      <div style="flex:1;">
+        <strong>${p.name}</strong><br/>
+        <span class="muted">₹${p.price}${p.size ? ' · ' + p.size : ''}${p.color ? ' · ' + p.color : ''}</span>
+      </div>
+      <button class="icon-btn" onclick="deleteProduct(${p.id})">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  await API.call('/api/sites/' + siteId + '/products/' + id, { method: 'DELETE' });
+  renderProductList();
+}
+
+async function renderCategoryOptions() {
+  const { site: s } = await API.call('/api/sites/' + siteId);
+  site = s;
+  document.getElementById('prodCategory').innerHTML = '<option value="">No category</option>' + site.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+async function renderCategoryList() {
+  const { site: s } = await API.call('/api/sites/' + siteId);
+  site = s;
+  const list = document.getElementById('categoryList');
+  if (site.categories.length === 0) { list.innerHTML = '<p class="muted">No categories yet.</p>'; return; }
+  list.innerHTML = site.categories.map(c => `
+    <div class="product-row"><div style="flex:1;"><strong>${c.name}</strong></div><button class="icon-btn" onclick="deleteCategory(${c.id})">Delete</button></div>
+  `).join('');
+}
+
+document.getElementById('addCategoryBtn').addEventListener('click', async () => {
+  const name = document.getElementById('newCategoryName').value;
+  if (!name) return;
+  try {
+    await API.call('/api/sites/' + siteId + '/categories', { method: 'POST', body: JSON.stringify({ name }) });
+    document.getElementById('newCategoryName').value = '';
+    renderCategoryList();
+    renderCategoryOptions();
+  } catch (err) { alert(err.message); }
+});
+
+async function deleteCategory(id) {
+  if (!confirm('Delete this category?')) return;
+  await API.call('/api/sites/' + siteId + '/categories/' + id, { method: 'DELETE' });
+  renderCategoryList();
+  renderCategoryOptions();
+}
+
+document.getElementById('savePaymentBtn').addEventListener('click', async () => {
+  const status = document.getElementById('paymentStatus');
+  status.textContent = 'Saving...';
+  try {
+    await API.call('/api/sites/' + siteId, { method: 'PUT', body: JSON.stringify({ payment_link: document.getElementById('paymentLink').value }) });
+    status.textContent = 'Saved ✓';
+    setTimeout(() => status.textContent = '', 2000);
+  } catch (err) { status.textContent = ''; alert(err.message); }
+});
+
+async function loadOrders() {
+  const { orders } = await API.call('/api/sites/' + siteId + '/orders');
+  const list = document.getElementById('orderList');
+  if (orders.length === 0) { list.innerHTML = '<p class="muted">No orders yet.</p>'; return; }
+  list.innerHTML = orders.map(o => {
+    const statusBadge = o.status === 'awaiting_payment'
+      ? '<span style="background:#fef3e2;color:#b45309;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;">⏳ Awaiting payment confirmation</span>'
+      : o.status === 'paid'
+        ? '<span style="background:#f0fdf4;color:#1a8a5f;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;">✓ Paid</span>'
+        : o.paymentMethod === 'COD'
+          ? '<span style="background:#f5f5f4;color:#78716c;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;">Cash on delivery</span>'
+          : '';
+    const markPaidBtn = o.status === 'awaiting_payment'
+      ? `<button class="icon-btn" style="margin-top:8px;" onclick="markOrderPaid(${o.id})">Mark as Paid</button>`
+      : '';
+    return `
+    <div class="order-card">
+      <div class="row-between"><strong>${o.customerName}</strong><span class="muted">${new Date(o.created_at).toLocaleString('en-IN')}</span></div>
+      <p class="muted" style="margin:4px 0;">${o.email || ''} ${o.phone ? '· ' + o.phone : ''}</p>
+      <p class="muted" style="margin:4px 0;">📍 ${o.address}</p>
+      <p style="margin:4px 0;">Payment: <strong>${o.paymentMethod}</strong> ${statusBadge}</p>
+      <div style="margin-top:8px;">
+        ${o.items.map(i => `<div class="row-between"><span>${i.name} × ${i.qty}</span><span>₹${i.price * i.qty}</span></div>`).join('')}
+      </div>
+      <div class="row-between" style="margin-top:8px;font-weight:700;"><span>Total</span><span>₹${o.total}</span></div>
+      ${markPaidBtn}
+    </div>
+  `;
+  }).join('');
+}
+
+async function markOrderPaid(orderId) {
+  try {
+    await API.call('/api/sites/' + siteId + '/orders/' + orderId, { method: 'PUT', body: JSON.stringify({ status: 'paid' }) });
+    loadOrders();
+  } catch (err) { alert(err.message); }
+}
+
+load();
+</script>
+</body>
+</html>
