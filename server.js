@@ -469,12 +469,17 @@ function sbRenderCartItems(){
   if (cart.length === 0) { itemsEl.innerHTML = '<p style="color:#aaa;">Your cart is empty.</p>'; }
   else {
     itemsEl.innerHTML = cart.map(function(i){
-      return '<div class="cart-row"><span>'+i.name+'</span>'
+      var thumb = i.image
+        ? '<img src="'+i.image+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;"/>'
+        : '<div style="width:48px;height:48px;border-radius:8px;background:#eee;flex-shrink:0;"></div>';
+      return '<div class="cart-row" style="align-items:center;gap:12px;">'
+        + thumb
+        + '<div style="flex:1;min-width:0;"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+i.name+'</div><div style="color:#888;font-size:.85rem;">₹'+i.price+' each</div></div>'
         + '<span style="display:flex;align-items:center;gap:8px;">'
         + '<button onclick="sbDecrementItem('+i.id+')" style="width:26px;height:26px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;font-weight:700;">−</button>'
         + '<span>'+i.qty+'</span>'
         + '<button onclick="sbIncrementItem('+i.id+')" style="width:26px;height:26px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;font-weight:700;">+</button>'
-        + '<span style="min-width:70px;text-align:right;">₹'+(i.price*i.qty)+'</span>'
+        + '<span style="min-width:70px;text-align:right;font-weight:600;">₹'+(i.price*i.qty)+'</span>'
         + '</span></div>';
     }).join('');
   }
@@ -640,7 +645,7 @@ function renderInfoPage(site, plan, pageKey, title) {
 ${renderTopbar(site, pageKey === 'aboutPage' ? 'about' : 'contact', t)}
 ${hero}
 <div class="container">${renderPageBlocks(page.content, t) || `<p style="color:${t.muted};text-align:center;">Nothing here yet.</p>`}</div>
-${plan.watermark ? `<footer>Made with BuddySite</footer>` : ''}
+<footer>Made with BuddySite</footer>
 </body></html>`;
 }
 
@@ -709,7 +714,7 @@ ${renderTopbar(site, 'home', t)}
     ${products.length ? products.map(p => renderProductCard(p, t)).join('') : `<p style="color:${t.muted};">No products in this category yet.</p>`}
   </div>
 </div>
-${plan.watermark ? `<footer>Made with BuddySite</footer>` : ''}
+<footer>Made with BuddySite</footer>
 
 ${renderCartAndCheckout(site)}
 </body></html>`);
@@ -764,12 +769,12 @@ app.get('/store/:slug', (req, res) => {
   .cat-title{margin-bottom:16px;}
   .cat-section{margin-bottom:36px;}
   .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
-  .category-scroll-wrap{background:#1A1A1A;border-radius:${t.radius};padding:16px 12px;}
-  .category-scroll{display:flex;overflow-x:auto;gap:10px;scrollbar-width:thin;}
-  .category-tile{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:96px;background:#F3F3F1;border:1px solid #D9D9D6;border-radius:${t.radius};padding:12px 8px;text-decoration:none;color:#1A1A1A;font-weight:600;font-size:.78rem;text-align:center;transition:transform .12s ease;}
+  .category-scroll-wrap{background:#1A1A1A;border-radius:${t.radius};padding:20px 16px;}
+  .category-scroll{display:flex;overflow-x:auto;gap:14px;scrollbar-width:thin;}
+  .category-tile{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:150px;background:#F3F3F1;border:1px solid #D9D9D6;border-radius:${t.radius};padding:20px 14px;text-decoration:none;color:#1A1A1A;font-weight:600;font-size:.9rem;text-align:center;transition:transform .12s ease;}
   .category-tile:hover{transform:translateY(-2px);border-color:#B5B5B0;}
-  .category-tile img{width:40px;height:40px;object-fit:cover;border-radius:6px;}
-  .category-tile-noimg{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:#E8E8E5;border-radius:6px;}
+  .category-tile img{width:72px;height:72px;object-fit:cover;border-radius:8px;}
+  .category-tile-noimg{width:72px;height:72px;display:flex;align-items:center;justify-content:center;font-size:2rem;background:#E8E8E5;border-radius:8px;}
   .product-card{background:${t.cardBg};border:1px solid ${t.border};border-radius:${t.radius};overflow:hidden;}
   .product-card img{width:100%;height:180px;object-fit:cover;}
   .no-img{width:100%;height:180px;background:${t.border};display:flex;align-items:center;justify-content:center;color:${t.muted};}
@@ -792,7 +797,7 @@ app.get('/store/:slug', (req, res) => {
 ${renderTopbar(site, 'home', t)}
 ${hero}
 <div class="container">${productsHtml || `<p style="text-align:center;color:${t.muted};">No products yet — check back soon!</p>`}</div>
-${plan.watermark ? `<footer>Made with BuddySite</footer>` : ''}
+<footer>Made with BuddySite</footer>
 
 ${renderCartAndCheckout(site)}
 </body></html>`);
